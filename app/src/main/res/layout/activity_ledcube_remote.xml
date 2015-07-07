@@ -1,0 +1,119 @@
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:paddingLeft="16dp" android:paddingRight="16dp"
+    android:paddingTop="16dp" android:paddingBottom="16dp"
+    tools:context=".LEDCubeRemoteActivity">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/server_address_text"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:inputType="text" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp" android:paddingBottom="10dp"
+        android:id="@+id/anim_spinner"
+        android:layout_below="@+id/color_rectangle"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect"
+        android:id="@+id/connect_button"
+        android:layout_below="@+id/server_address_text"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/server_address_text"
+        android:layout_alignEnd="@+id/server_address_text" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekbar_red"
+        android:layout_below="@+id/connect_button"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/connect_button" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekbar_green"
+        android:layout_below="@+id/seekbar_red"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/seekbar_red" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekbar_blue"
+        android:layout_below="@+id/seekbar_green"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/seekbar_green" />
+
+    <View android:id="@+id/color_rectangle"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/seekbar_blue"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/seekbar_blue"
+        android:background="#000000" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp" android:layout_marginBottom="2dp"
+        android:paddingTop="10dp" android:paddingBottom="10dp"
+        android:id="@+id/options_spinner"
+        android:layout_below="@+id/anim_spinner"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enabled"
+        android:id="@+id/animoption_checkbox"
+        android:layout_below="@+id/options_spinner"
+        android:layout_alignParentStart="true"
+        android:visibility="invisible" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/animoption_seekbar"
+        android:layout_below="@+id/options_spinner"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="invisible" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp" android:layout_marginBottom="2dp"
+        android:paddingTop="10dp" android:paddingBottom="10dp"
+        android:id="@+id/animoption_spinner"
+        android:layout_below="@+id/options_spinner"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="invisible" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/animoption_text"
+        android:layout_below="@+id/options_spinner"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="invisible" />
+</RelativeLayout>
