@@ -9,29 +9,29 @@ import java.io.IOException;
  *
  * @author Techjar
  */
-public class PacketSetAnimation extends Packet {
-    private String name;
+public class PacketClientCapabilities extends Packet {
+    private int value;
 
-    public PacketSetAnimation() {
+    public PacketClientCapabilities() {
     }
 
-    public PacketSetAnimation(String name) {
-        this.name = name;
+    public PacketClientCapabilities(int value) {
+        this.value = value;
     }
 
     @Override
     public void readData(DataInputStream stream) throws IOException {
-        name = stream.readUTF();
+        value = stream.readInt();
     }
 
     @Override
     public void writeData(DataOutputStream stream) throws IOException {
-        stream.writeUTF(name);
+        stream.writeInt(value);
     }
 
     @Override
     public int getRequiredCapabilities() {
-        return Capabilities.CONTROL_DATA;
+        return 0;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class PacketSetAnimation extends Packet {
         throw new UnsupportedOperationException();
     }
 
-    public String getName() {
-        return name;
+    public int getValue() {
+        return value;
     }
 }

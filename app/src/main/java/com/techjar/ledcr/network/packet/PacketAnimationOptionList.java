@@ -59,6 +59,11 @@ public class PacketAnimationOptionList extends Packet {
     }
 
     @Override
+    public int getRequiredCapabilities() {
+        return Capabilities.CONTROL_DATA;
+    }
+
+    @Override
     public void process() {
         LEDCubeRemoteActivity.instance.runOnUiThread(new Runnable() {
             @Override

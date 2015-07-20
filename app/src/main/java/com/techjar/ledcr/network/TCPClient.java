@@ -1,6 +1,7 @@
 package com.techjar.ledcr.network;
 
 import com.techjar.ledcr.network.packet.Packet;
+import com.techjar.ledcr.network.packet.PacketClientCapabilities;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -28,6 +29,7 @@ public class TCPClient {
         socket.setTcpNoDelay(true);
         inputStream = socket.getInputStream();
         outputStream = socket.getOutputStream();
+        sendQueue.add(new PacketClientCapabilities(Packet.Capabilities.CONTROL_DATA));
         sendThread = new Thread("Client Send Thread") {
             @Override
             public void run() {
@@ -47,7 +49,7 @@ public class TCPClient {
                             return;
                         }
                     }
-                    try { Thread.sleep(1); }
+                    try { Thread.sleep(10); }
                     catch (InterruptedException ex) {} // I hate checked exceptions
                 }
             }

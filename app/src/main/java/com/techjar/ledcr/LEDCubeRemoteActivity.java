@@ -39,7 +39,6 @@ public class LEDCubeRemoteActivity extends ActionBarActivity {
     SharedPreferences.Editor sharedPrefEditor;
     Map<String, AnimationOption> animOptionMap = new HashMap<>();
     Map<String, String> animOptionValueMap = new HashMap<>();
-    Map<String, String> optionSpinnerMap = new HashMap<>();
     int prevAnimOption;
     Spinner animSpinner;
     Spinner animOptionsSpinner;
@@ -69,7 +68,7 @@ public class LEDCubeRemoteActivity extends ActionBarActivity {
         animOptionsSpinner = (Spinner)findViewById(R.id.options_spinner);
         colorRectangle = findViewById(R.id.color_rectangle);
         final EditText serverAddressText = (EditText)findViewById(R.id.server_address_text);
-        serverAddressText.setText(sharedPref.getString("server_address", ":7546"));
+        serverAddressText.setText(sharedPref.getString("server_address", ":7545"));
         final Button connectButton = (Button)findViewById(R.id.connect_button);
 
         connectButton.setOnClickListener(new View.OnClickListener() {
