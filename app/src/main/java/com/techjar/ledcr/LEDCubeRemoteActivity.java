@@ -6,7 +6,9 @@ import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.techjar.ledcr.network.TCPClient;
 import com.techjar.ledcr.network.packet.Packet;
@@ -25,6 +28,7 @@ import com.techjar.ledcr.network.packet.PacketSetAnimation;
 import com.techjar.ledcr.network.packet.PacketSetAnimationOption;
 import com.techjar.ledcr.network.packet.PacketSetColorPicker;
 import com.techjar.ledcr.util.AnimationOption;
+import com.techjar.ledcr.util.Color;
 import com.techjar.ledcr.util.Util;
 
 import java.io.IOException;
@@ -50,6 +54,9 @@ public class LEDCubeRemoteActivity extends ActionBarActivity {
     Spinner optionSpinner;
     SeekBar optionSeekBar;
     EditText optionText;
+    SeekBar optionSeekBar2;
+    SeekBar optionSeekBar3;
+    View optionColorRectangle;
     TextWatcher optionTextWatcher;
     TCPClient tcpClient;
 
@@ -116,8 +123,27 @@ public class LEDCubeRemoteActivity extends ActionBarActivity {
                     if (option != null) {
                         switch (option.getType()) {
                             case TEXT:
+                            case SPINNER:
                                 hideOptionComponents();
                                 if (optionTextWatcher != null) optionText.removeTextChangedListener(optionTextWatcher);
+                                if (option.getType() == AnimationOption.OptionType.SPINNER) {
+                                    optionText.setInputType(InputType.TYPE_CLASS_NUMBER | (Integer.parseInt(option.params[4].toString()) > 0 ? InputType.TYPE_NUMBER_FLAG_DECIMAL : 0) | (Integer.parseInt(option.params[1].toString()) < 0 ? InputType.TYPE_NUMBER_FLAG_SIGNED : 0));
+                                    optionText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                        @Override
+                                        public void onFocusChange(View v, boolean hasFocus) {
+                                            if (!hasFocus) {
+                                                try {
+                                                    float num = Float.parseFloat(optionText.getText().toString());
+                                                    optionText.setText(Float.toString(Math.max(Math.min(num, Float.parseFloat(option.params[2].toString())), Float.parseFloat(option.params[1].toString()))));
+                                                } catch (NumberFormatException ex) {
+                                                }
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    optionText.setInputType(0);
+                                    optionText.setOnFocusChangeListener(null);
+                                }
                                 optionText.setText(optionValue);
                                 optionTextWatcher = new TextWatcher() {
                                     @Override
@@ -131,8 +157,12 @@ public class LEDCubeRemoteActivity extends ActionBarActivity {
                                     @Override
                                     public void afterTextChanged(Editable s) {
                                         String text = optionText.getText().toString();
-                                        fireOptionChange(option.getId(), text);
-                                        animOptionValueMap.put(option.name, text);
+                                        try {
+                                            if (option.getType() == AnimationOption.OptionType.SPINNER) Float.parseFloat(text);
+                                            fireOptionChange(option.getId(), text);
+                                            animOptionValueMap.put(option.name, text);
+                                        } catch (NumberFormatException ex) {
+                                        }
                                     }
                                 };
                                 optionText.addTextChangedListener(optionTextWatcher);
@@ -217,6 +247,41 @@ public class LEDCubeRemoteActivity extends ActionBarActivity {
                                     animOptionsSpinner.setSelection(prevAnimOption);
                                 }
                                 break;
+                            case COLORPICKER:
+                                hideOptionComponents();
+                                SeekBar.OnSeekBarChangeListener seekBarListener = new SeekBar.OnSeekBarChangeListener() {
+                                    @Override
+                                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                        int red = optionSeekBar.getProgress();
+                                        int green = optionSeekBar2.getProgress();
+                                        int blue = optionSeekBar3.getProgress();
+                                        optionColorRectangle.setBackgroundColor(0xFF000000 | (red << 16) | (green << 8) | blue);
+                                        fireOptionChange(option.getId(), Util.colorToString(new Color(red, green, blue), false));
+                                    }
+
+                                    @Override
+                                    public void onStartTrackingTouch(SeekBar seekBar) {
+                                    }
+
+                                    @Override
+                                    public void onStopTrackingTouch(SeekBar seekBar) {
+                                    }
+                                };
+                                Color color = Util.stringToColor(optionValue);
+                                optionSeekBar.setOnSeekBarChangeListener(seekBarListener);
+                                optionSeekBar.setMax(255);
+                                optionSeekBar.setProgress(color.getRed());
+                                optionSeekBar.setVisibility(View.VISIBLE);
+                                optionSeekBar2.setOnSeekBarChangeListener(seekBarListener);
+                                optionSeekBar2.setMax(255);
+                                optionSeekBar2.setProgress(color.getGreen());
+                                optionSeekBar2.setVisibility(View.VISIBLE);
+                                optionSeekBar3.setOnSeekBarChangeListener(seekBarListener);
+                                optionSeekBar3.setMax(255);
+                                optionSeekBar3.setProgress(color.getBlue());
+                                optionSeekBar3.setVisibility(View.VISIBLE);
+                                optionColorRectangle.setVisibility(View.VISIBLE);
+                                break;
                         }
                         prevAnimOption = position;
                     }
@@ -263,6 +328,9 @@ public class LEDCubeRemoteActivity extends ActionBarActivity {
         optionSpinner = (Spinner)findViewById(R.id.animoption_spinner);
         optionSeekBar = (SeekBar)findViewById(R.id.animoption_seekbar);
         optionText = (EditText)findViewById(R.id.animoption_text);
+        optionSeekBar2 = (SeekBar)findViewById(R.id.animoption_seekbar2);
+        optionSeekBar3 = (SeekBar)findViewById(R.id.animoption_seekbar3);
+        optionColorRectangle = findViewById(R.id.animoption_colorrectangle);
 
         Thread closeWatcher = new Thread("TCPClient Close Watcher") {
             @Override
@@ -355,6 +423,9 @@ public class LEDCubeRemoteActivity extends ActionBarActivity {
         optionSpinner.setVisibility(View.INVISIBLE);
         optionSeekBar.setVisibility(View.INVISIBLE);
         optionText.setVisibility(View.INVISIBLE);
+        optionSeekBar2.setVisibility(View.INVISIBLE);
+        optionSeekBar3.setVisibility(View.INVISIBLE);
+        optionColorRectangle.setVisibility(View.INVISIBLE);
     }
 
     private void fireOptionChange(String id, String value) {
@@ -382,7 +453,7 @@ public class LEDCubeRemoteActivity extends ActionBarActivity {
                                 }
                             });
                         }
-                        try { Thread.sleep(1); }
+                        try { Thread.sleep(10); }
                         catch (InterruptedException ex) {} // I hate checked exceptions
                     }
                 }

@@ -42,5 +42,7 @@ public class AnimationOption {
         CHECKBOX, // 0-1 params: default value
         RADIOGROUP, // 2+ params: default value, items (id & name interleaved)
         BUTTON, // 1 param: text
+        SPINNER, // 5 params: default value, min value, max value, increment, decimal places
+        COLORPICKER, // 1 param: default value
     }
 }

@@ -199,6 +199,18 @@ public final class Util {
         return bytesToMB(bytes) + " MB";
     }
 
+    public static String colorToString(Color color, boolean alpha) {
+        return color.getRed() + "," + color.getGreen() + "," + color.getBlue() + (alpha ? "," + color.getAlpha() : "");
+    }
+
+    public static Color stringToColor(String str) {
+        String[] split = str.split(",");
+        if (split.length < 3) throw new IllegalArgumentException("Too few color components or wrong delimiter");
+        Color color = new Color(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+        if (split.length >= 4) color.setAlpha(Integer.parseInt(split[3]));
+        return color;
+    }
+
     public static int getNextPowerOfTwo(int number) {
         int ret = Integer.highestOneBit(number);
         return ret < number ? ret << 1 : ret;
